@@ -34,37 +34,27 @@
     <tr>
       <td><strong>Additive White Gaussian Noise (AWGN)</strong></td>
       <td>Thermal noise, quantization error, amplifier noise</td>
-      <td><img style="background:white; padding:10px 15px; border-radius:8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); vertical-align:middle;"
-           src="https://latex.codecogs.com/svg.latex?\Large%20n_{\text{AWGN}}(t)%20=%20\sigma_g%20\cdot%20w(t),\quad%20w(t)\sim%20\mathcal{N}(0,1)" 
-           alt="AWGN model"></td>
+      <td><img style="vertical-align: middle;" src="https://latex.codecogs.com/svg.latex?\color{White}\Large%20n_{\text{AWGN}}(t)%20=%20\sigma_g%20\cdot%20w(t),\quad%20w(t)\sim%20\mathcal{N}(0,1)" alt="AWGN model"></td>
     </tr>
     <tr>
       <td><strong>Baseline Wander (BW)</strong></td>
       <td>Respiration, body movement, electrode drift</td>
-      <td><img style="background:white; padding:10px 15px; border-radius:8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); vertical-align:middle;"
-           src="https://latex.codecogs.com/svg.latex?\Large%20n_{\text{BW}}(t)%20=%20A_{\text{bw}}\sin(2\pi%20f_{\text{resp}}t)%20%5Ctext%7B%20or%20%7D%20%5%20\sum_{k=1}^{3}b_k%5Csin(2\pi%20k%20f_{\text{resp}}t%20+%20%5Cphi_k)" 
-           alt="Baseline Wander model"></td>
+      <td><img style="vertical-align: middle;" src="https://latex.codecogs.com/svg.latex?\color{White}\Large%20n_{\text{BW}}(t)%20=%20A_{\text{bw}}\sin(2\pi%20f_{\text{resp}}t)%20\text{%20or%20}%20\sum_{k=1}^{3}b_k\sin(2\pi%20k%20f_{\text{resp}}t%20+%20\phi_k)" alt="Baseline Wander model"></td>
     </tr>
     <tr>
       <td><strong>Powerline Interference (PLI)</strong></td>
       <td>50/60 Hz electromagnetic coupling</td>
-      <td><img style="background:white; padding:10px 15px; border-radius:8px; box-shadow: 0 2px 6px rgba(0,0,0,0,0.15); vertical-align:middle;"
-           src="https://latex.codecogs.com/svg.latex?\Large%20n_{PL}(t)=A_{pl}\sum_{k=1}^{H}c_k\sin(2\pi%20k%20f_{pl}t%20+%20%5Cphi_k)" 
-           alt="Powerline Interference model"></td>
+      <td><img style="vertical-align: middle;" src="https://latex.codecogs.com/svg.latex?\color{White}\Large%20n_{PL}(t)=A_{pl}\sum_{k=1}^{H}c_k\sin(2\pi%20k%20f_{pl}%20t%20+%20\phi_k)" alt="Powerline Interference model"></td>
     </tr>
     <tr>
       <td><strong>Muscle Artifact (MA/EMG)</strong></td>
       <td>Skeletal muscle contraction, tremor, shivering</td>
-      <td><img style="background:white; padding:10px 15px; border-radius:8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); vertical-align:middle;"
-           src="https://latex.codecogs.com/svg.latex?\Large%20n_{\text{MA}}(t)%20=%20%5Csigma_{\text{ma}}%20%5Ccdot%20g(t)%5Ccdot%7C1%20+%20m(t)%7C%2C%20%5Ctext%7B%20g(t)%3A%20HPF%20%3E15Hz%2C%20m(t)%3A%202-12%20Hz%20envelope%7D" 
-           alt="Muscle Artifact model"></td>
+      <td><img style="vertical-align: middle;" src="https://latex.codecogs.com/svg.latex?\color{White}\Large%20n_{\text{MA}}(t)%20=%20\sigma_{\text{ma}}%20\cdot%20g(t)\cdot|1%20+%20m(t)|,%20%20\text{g(t): HPF%20>%2015Hz,%20m(t):%202-12%20Hz%20envelope}" alt="Muscle Artifact model"></td>
     </tr>
     <tr>
       <td><strong>Electrode Motion Artifact (EM)</strong></td>
       <td>Skin stretching, loose contact, cable movement</td>
-      <td><img style="background:white; padding:10px 20px; border-radius:8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); vertical-align:middle;"
-           src="https://latex.codecogs.com/svg.latex?\Large%20%5Ctext%7BMIT-BIH%20NSTDB%20%22em%22%20record%20(real%20recording%2C%20no%20reliable%20synthetic%20model)%7D" 
-           alt="Electrode Motion Artifact"></td>
+      <td><img style="vertical-align: middle;" src="https://latex.codecogs.com/svg.latex?\color{White}\Large%20\text{MIT-BIH%20NSTDB%20``em''%20record%20(real%20recording,%20no%20reliable%20synthetic%20model)}" alt="Electrode Motion Artifact"></td>
     </tr>
   </tbody>
 </table>
