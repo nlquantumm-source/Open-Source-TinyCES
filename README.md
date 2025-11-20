@@ -33,27 +33,27 @@
     <tr>
       <td><strong>Additive White Gaussian Noise (AWGN)</strong></td>
       <td>Thermal noise, quantization error, amplifier noise</td>
-      <td><img style="vertical-align: middle;" src="https://latex.codecogs.com/svg.latex?\color{White}\Large%20n_{\text{AWGN}}(t)%20=%20\sigma_g%20\cdot%20w(t),\quad%20w(t)\sim%20\mathcal{N}(0,1)" alt="AWGN model"></td>
+      <td>$$ n_{\text{AWGN}}(t) = \sigma_g \cdot w(t),\quad w(t)\sim\mathcal{N}(0,1) $$<br>$$ \sigma_g \text{ set via target SNR: } \sigma_g = \sqrt{\frac{P_s}{10^{\text{SNR}/10}}} $$</td>
     </tr>
     <tr>
       <td><strong>Baseline Wander (BW)</strong></td>
       <td>Respiration, body movement, electrode drift</td>
-      <td><img style="vertical-align: middle;" src="https://latex.codecogs.com/svg.latex?\color{White}\Large%20n_{\text{BW}}(t)%20=%20A_{\text{bw}}\sin(2\pi%20f_{\text{resp}}t)%20\text{%20or%20}%20\sum_{k=1}^{3}b_k\sin(2\pi%20k%20f_{\text{resp}}t%20+%20\phi_k)" alt="Baseline Wander model"></td>
+      <td>$$ n_{\text{BW}}(t) = A_{\text{bw}} \sin(2\pi f_{\text{resp}} t) $$<br>$$ \text{or multi-harmonic: } \sum_{k=1}^{3} b_k \sin(2\pi k f_{\text{resp}} t + \phi_k) $$<br>$$ f_{\text{resp}} \in [0.15, 0.4]\text{ Hz} $$</td>
     </tr>
     <tr>
       <td><strong>Powerline Interference (PLI)</strong></td>
       <td>50/60 Hz electromagnetic coupling</td>
-      <td><img style="vertical-align: middle;" src="https://latex.codecogs.com/svg.latex?\color{White}\Large%20n_{PL}(t)=A_{pl}\sum_{k=1}^{H}c_k\sin(2\pi%20k%20f_{pl}%20t%20+%20\phi_k)" alt="Powerline Interference model"></td>
+      <td>$$ n_{\text{PL}}(t) = A_{\text{pl}} \sum_{k=1}^{H} c_k \sin(2\pi k f_{\text{pl}} t + \phi_k) $$<br>$$ H = 1-5 \text{ harmonics} $$</td>
     </tr>
     <tr>
       <td><strong>Muscle Artifact (MA/EMG)</strong></td>
       <td>Skeletal muscle contraction, tremor, shivering</td>
-      <td><img style="vertical-align: middle;" src="https://latex.codecogs.com/svg.latex?\color{White}\Large%20n_{\text{MA}}(t)%20=%20\sigma_{\text{ma}}%20\cdot%20g(t)\cdot|1%20+%20m(t)|,%20%20\text{g(t): HPF%20>%2015Hz,%20m(t):%202-12%20Hz%20envelope}" alt="Muscle Artifact model"></td>
+      <td>$$ \text{Real (gold standard): MIT-BIH NSTDB ``ma'' record} $$<br>$$ \text{Synthetic bursty model (most realistic approximation):} $$<br>$$ n_{\text{MA}}(t) = \sigma_{\text{ma}} \cdot g(t) \cdot |1 + m(t)| $$<br>$$ g(t):\ \text{HPF}>15\,\text{Hz}\ \mathcal{N}(0,1),\ m(t):\ 2-12\,\text{Hz envelope} $$</td>
     </tr>
     <tr>
       <td><strong>Electrode Motion Artifact (EM)</strong></td>
       <td>Skin stretching, loose contact, cable movement</td>
-      <td><img style="vertical-align: middle;" src="https://latex.codecogs.com/svg.latex?\color{White}\Large%20\text{MIT-BIH%20NSTDB%20``em''%20record%20(real%20recording,%20no%20reliable%20synthetic%20model)}" alt="Electrode Motion Artifact"></td>
+      <td>$$ \text{Real (gold standard): MIT-BIH NSTDB ``em'' record (most reliable)} $$<br>$$ \text{Synthetic approximation (biphasic exponential transients, used in some studies):} $$<br>$$ n_{\text{EM}}(t) = \sum_{i} A_i \left( e^{-(t-t_i)/\tau_1} - e^{-(t-t_i)/\tau_2} \right) $$<br>$$ \tau_1 \ll \tau_2\ (sharp rise + slow decay),\ \text{random } A_i, t_i, \tau $$</td>
     </tr>
   </tbody>
 </table>
