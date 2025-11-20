@@ -22,51 +22,138 @@
 * *EMG/muscle artifacts* (high-frequency modulated Gaussian) to train the TSPulse model on noisy-clean ECG pairs.<br /><br /><br />
 
 # Algorithm & Mathematical Equation Use-case<br />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECG Noise Types Reference Table</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 14px 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #eef5ff;
+        }
+        .noise-type {
+            font-weight: bold;
+            font-size: 15px;
+            white-space: nowrap;
+        }
+        .mathjax-block {
+            display: block;
+            margin: 8px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h1 style="text-align:center; color:#2c3e50;">ECG Noise Types and Standard Models (2020–2025 Research)</h1>
+
 <table>
-  <thead>
-    <tr>
-      <th>Noise Type</th>
-      <th>Real-World Cause</th>
-      <th>Standard Mathematical Model</th>
-      <th>Typical Parameters<br><small>(fs = 250–500 Hz, ECG std ≈ 1)</small></th>
-      <th>Use-Case in 2020–2025 SOTA Denoising</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Additive White Gaussian Noise (AWGN)</strong></td>
-      <td>Thermal noise, quantization, amplifier noise</td>
-      <td>$$n_{\text{AWGN}}(t) = \sigma_g \cdot w(t),\quad w(t)\sim\mathcal{N}(0,1)$$</td>
-      <td>SNR ∈ [−6, 24] dB<br>σ_g ≈ 0.01–1.0 × std(ECG)</td>
-      <td>Universal benchmark. Near-perfect removal at SNR ≥ 6 dB with any modern method</td>
-    </tr>
-    <tr>
-      <td><strong>Baseline Wander (BW)</strong></td>
-      <td>Respiration, movement, electrode drift</td>
-      <td>$$n_{\text{BW}}(t) = A_{\text{bw}} \sin(2\pi \cdot 0.25 t)$$</td>
-      <td>A_bw = 0.1–0.5 × std(ECG)<br>f ≈ 0.15–0.4 Hz</td>
-      <td>Critical for R-peak detection. Adaptive/EMD/deep models excel</td>
-    </tr>
-    <tr>
-      <td><strong>Powerline Interference (PLI)</strong></td>
-      <td>50/60 Hz electromagnetic coupling</td>
-      <td>$$n_{\text{PL}}(t) = A_{\text{pl}} \sum_{k=1^H c_k \sin(2\pi k f_{\text{pl}} t + \phi_k)$$</td>
-      <td>A_pl = 1–20 % of ECG amplitude<br>f_pl = 50 or 60 Hz</td>
-      <td>Easiest (notch filter). Modern nets remove it implicitly</td>
-    </tr>
-    <tr>
-      <td><strong>Muscle Artifact (MA/EMG)</strong></td>
-      <td>Muscle contraction, tremor</td>
-      <td>NSTDB “ma” or bursty high-pass filtered Gaussian with envelope</td>
-      <td>σ_ma = 0.05–0.25 × std(ECG)<br>NSTDB ma scaled up to ×3</td>
-      <td>Hardest broadband noise. 2023–2025: diffusion + masked models (TSPulse) win</td>
-    </tr>
-    <tr>
-      <td><strong>Electrode Motion (EM)</strong></td>
-      <td>Skin stretch, loose electrodes</td>
-      <td>NSTDB “em” record (only realistic source)</td>
-      <td>Scaled 0.1–2.0<br>Transients up to 5× ECG amplitude</td>
-      <td>Clinically most dangerous (mimics ischemia/PVC). Only latest foundation models (TSPulse 2024–2025) preserve >95 % morphology</td>
-    </tr>
-  </tbody>
+    <thead>
+        <tr>
+            <th>Noise Type</th>
+            <th>Real-World Cause</th>
+            <th>Standard Mathematical Model (with LaTeX)</th>
+            <th>Typical Parameters<br><small>(fs = 250–500 Hz, ECG amplitude normalized to std = 1 or peak ≈ 1–3 mV)</small></th>
+            <th>Algorithmic Use-Case in Denoising Research<br><small>(2020–2025 SOTA)</small></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="noise-type">Additive White Gaussian Noise (AWGN)</td>
+            <td>Thermal noise, quantization error, amplifier noise</td>
+            <td>\[ n_{\text{AWGN}}(t) = \sigma_g \cdot w(t) \]<br>
+                where \( w(t) \sim \mathcal{N}(0,1) \)<br><br>
+                \[ \sigma_g = \sqrt{\frac{P_s}{10^{\text{SNR}/10}}} \]<br>
+                \( P_s \) = signal power</td>
+            <td>σ_g set for SNR ∈ [−6, 24] dB<br>
+                Most common: 0, 6, 12, 18, 24 dB<br>
+                σ_g ≈ 0.01–1.0 × std(ECG)</td>
+            <td>Universal high-frequency noise benchmark. Used in every ECG denoising paper to test general robustness. Wavelets, EMD, deep models (Autoencoders, GANs, TSPulse) all show near-perfect removal at SNR ≥ 6 dB.</td>
+        </tr>
+        <tr>
+            <td class="noise-type">Baseline Wander (BW)</td>
+            <td>Respiration, body movement, electrode drift</td>
+            <td>Real: NSTDB “bw” record<br>
+                Synthetic (most widely adopted):<br>
+                \[ n_{\text{BW}}(t) = A_{\text{bw}} \sum_{k=1}^{3} b_k \sin(2\pi k f_{\text{resp}} t + \phi_k) \]<br>
+                or single sinusoid \( A_{\text{bw}} \sin(2\pi \cdot 0.25 t) \)</td>
+            <td>f_resp ∈ [0.15, 0.4] Hz (breathing 9–24 breaths/min)<br>
+                A_bw = 0.1–0.5 × std(ECG)<br>
+                NSTDB bw scaled by 0.1–2.0<br>
+                Typical single-component amplitude 0.2–0.3 mV peak-to-peak</td>
+            <td>Simulates breathing artifact. Critical for accurate R-peak detection and QRS morphology. Adaptive filters, high-pass (0.5 Hz), EMD, and modern foundation models (TTM/TSPulse) excel. Failure here causes false arrhythmia detection.</td>
+        </tr>
+        <tr>
+            <td class="noise-type">Powerline Interference (PLI)</td>
+            <td>50/60 Hz electromagnetic coupling</td>
+            <td>\[ n_{\text{PL}}(t) = A_{\text{pl}} \sum_{k=1}^{H} c_k \sin(2\pi k f_{\text{pl}} t + \phi_k) \]<br>
+                H = 1–5 harmonics</td>
+            <td>f_pl = 50 or 60 Hz<br>
+                A_pl = 0.02–0.20 × std(ECG) (1–20 % of ECG amplitude, often 5–10 %)<br>
+                Harmonics amplitude decay 1/k or 1/k²<br>
+                NSTDB does not include PLI → always synthetic</td>
+            <td>Easiest to remove (notch/IIR). Included in almost every stress test for completeness. Deep models learn it implicitly without explicit notch, preserving harmonic content of QRS complex.</td>
+        </tr>
+        <tr>
+            <td class="noise-type">Muscle Artifact (MA/EMG)</td>
+            <td>Skeletal muscle contraction, tremor, shivering</td>
+            <td>Real: NSTDB “ma” record (gold standard)<br>
+                Synthetic (bursty, recommended):<br>
+                \[ n_{\text{MA}}(t) = \sigma_{\text{ma}} \cdot g(t) \cdot \|1 + m(t)\| \]<br>
+                where g(t) ~ N(0,1) filtered HPF > 15 Hz,<br>
+                m(t) = low-frequency envelope (bandpass 2–12 Hz)</td>
+            <td>σ_ma = 0.05–0.25 × std(ECG)<br>
+                Envelope modulation depth 0.5–3.0<br>
+                Burst duration 0.2–1 s<br>
+                NSTDB ma scaled 0.1–3.0 (very challenging at >1.0)</td>
+            <td>Most difficult broadband non-stationary noise. Overlaps QRS band → linear filters distort morphology. GANs, diffusion models, and masked-reconstruction models (TSPulse, TimesFM) achieve best preservation of clinical features (2023–2025 papers).</td>
+        </tr>
+        <tr>
+            <td class="noise-type">Electrode Motion Artifact (EM)</td>
+            <td>Skin stretching, loose contact, cable movement</td>
+            <td>Real: NSTDB “em” record (only realistic option)<br>
+                Synthetic (rarely used): sporadic transients modeled as<br>
+                \[ n_{\text{EM}}(t) = A_{\text{em}} \cdot \text{rect}(t-t_0) * h(t) \]<br>
+                or large low-frequency swings + saturation</td>
+            <td>NSTDB em scaled 0.1–2.0 (at scale = 1 already mimics PVCs/ST changes)<br>
+                Transient amplitude up to 5× ECG peak, duration 0.5–3 s<br>
+                Frequency content < 10 Hz with abrupt onsets</td>
+            <td>Hardest artifact clinically — mimics pathological ST elevation, PVCs, ischemia. Classic filters fail completely. TSPulse’s dual time/frequency masking gives best distinction from true morphology (2024–2025 papers show >95 % clinical feature preservation).</td>
+        </tr>
+    </tbody>
 </table>
+
+</body>
+</html>
