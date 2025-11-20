@@ -22,10 +22,51 @@
 * *EMG/muscle artifacts* (high-frequency modulated Gaussian) to train the TSPulse model on noisy-clean ECG pairs.<br /><br /><br />
 
 # Algorithm & Mathematical Equation Use-case<br />
-| Noise Type                  | Real-World Cause                                      | Standard Mathematical Model (with LaTeX)                                                                                           | Typical Parameters (fs = 250–500 Hz, ECG std ≈ 1)                                                                                           | Algorithmic Use-Case in Denoising Research (2020–2025 SOTA)                                                                                           |<br />
-|---------------------------|-------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|<br />
-| **Additive White Gaussian Noise (AWGN)** | Thermal noise, quantization error, amplifier noise    | $n_{\text{AWGN}}(t) = \sigma_g \cdot w(t)$<br>$w(t) \sim \mathcal{N}(0,1)$                                                        | $\sigma_g$ set for SNR ∈ [−6, 24] dB<br>Most common: 0, 6, 12, 18, 24 dB<br>$\sigma_g \approx 0.01–1.0 \times \text{std(ECG)}$                | Universal high-frequency noise benchmark. Used in every paper. Wavelets, EMD, autoencoders, GANs, TSPulse all achieve near-perfect removal at SNR ≥ 6 dB |<br />
-| **Baseline Wander (BW)**  | Respiration, body movement, electrode drift           | $n_{\text{BW}}(t) = A_{\text{bw}} \sin(2\pi \cdot 0.25 t)$<br>or sum of 3 respiration harmonics                                         | $f_{\text{resp}} \in [0.15, 0.4]$ Hz<br>$A_{\text{bw}} = 0.1–0.5 \times \text{std(ECG)}$<br>NSTDB bw scaled 0.1–2.0                          | Simulates breathing artifact. Critical for R-peak detection. Adaptive filters, high-pass 0.5 Hz, EMD, TTM/TSPulse excel                             |<br />
-| **Powerline Interference (PLI)** | 50/60 Hz electromagnetic coupling                     | $n_{\text{PL}}(t) = A_{\text{pl}} \sum_{k=1}^{H} c_k \sin(2\pi k f_{\text{pl}} t + \phi_k)$                                           | $f_{\text{pl}} =$ 50 or 60 Hz<br>$A_{\text{pl}} = 0.02–0.20 \times \text{std(ECG)}$ (1–20 %)<br>Harmonics decay $1/k$ or $1/k^2$             | Easiest to remove (notch/IIR). Included in almost every stress test. Modern deep models learn it implicitly without explicit notch                |<br />
-| **Muscle Artifact (MA/EMG)** | Skeletal muscle contraction, tremor, shivering       | Real: NSTDB “ma”<br>Synthetic: $n_{\text{MA}}(t)=\sigma_{\text{ma}} \cdot g(t) \cdot \|1+m(t)\|$<br>$g(t)$ HPF >15 Hz, $m(t)$ envelope | $\sigma_{\text{ma}} = 0.05–0.25 \times \text{std(ECG)}$<br>NSTDB ma scaled 0.1–3.0 (very hard >1.0)                                          | Most difficult broadband non-stationary noise. GANs, diffusion, and masked-reconstruction models (TSPulse, TimesFM) achieve best morphology preservation (2023–2025) |<br />
-| **Electrode Motion (EM)** | Skin stretching, loose contact, cable movement        | Real: NSTDB “em” record (gold standard)<br>Synthetic rare: large low-freq swings + transients                                          | NSTDB em scaled 0.Concurrent1–2.0<br>Transient amplitude up to 5× ECG peak, <10 Hz                                                  | Hardest clinically — mimics PVCs/ST changes. Classic filters fail. TSPulse’s dual masking gives >95 % clinical feature preservation (2024–2025) |<br />
+<table>
+  <thead>
+    <tr>
+      <th>Noise Type</th>
+      <th>Real-World Cause</th>
+      <th>Standard Mathematical Model</th>
+      <th>Typical Parameters<br><small>(fs = 250–500 Hz, ECG std ≈ 1)</small></th>
+      <th>Use-Case in 2020–2025 SOTA Denoising</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Additive White Gaussian Noise (AWGN)</strong></td>
+      <td>Thermal noise, quantization, amplifier noise</td>
+      <td>$$n_{\text{AWGN}}(t) = \sigma_g \cdot w(t),\quad w(t)\sim\mathcal{N}(0,1)$$</td>
+      <td>SNR ∈ [−6, 24] dB<br>σ_g ≈ 0.01–1.0 × std(ECG)</td>
+      <td>Universal benchmark. Near-perfect removal at SNR ≥ 6 dB with any modern method</td>
+    </tr>
+    <tr>
+      <td><strong>Baseline Wander (BW)</strong></td>
+      <td>Respiration, movement, electrode drift</td>
+      <td>$$n_{\text{BW}}(t) = A_{\text{bw}} \sin(2\pi \cdot 0.25 t)$$</td>
+      <td>A_bw = 0.1–0.5 × std(ECG)<br>f ≈ 0.15–0.4 Hz</td>
+      <td>Critical for R-peak detection. Adaptive/EMD/deep models excel</td>
+    </tr>
+    <tr>
+      <td><strong>Powerline Interference (PLI)</strong></td>
+      <td>50/60 Hz electromagnetic coupling</td>
+      <td>$$n_{\text{PL}}(t) = A_{\text{pl}} \sum_{k=1^H c_k \sin(2\pi k f_{\text{pl}} t + \phi_k)$$</td>
+      <td>A_pl = 1–20 % of ECG amplitude<br>f_pl = 50 or 60 Hz</td>
+      <td>Easiest (notch filter). Modern nets remove it implicitly</td>
+    </tr>
+    <tr>
+      <td><strong>Muscle Artifact (MA/EMG)</strong></td>
+      <td>Muscle contraction, tremor</td>
+      <td>NSTDB “ma” or bursty high-pass filtered Gaussian with envelope</td>
+      <td>σ_ma = 0.05–0.25 × std(ECG)<br>NSTDB ma scaled up to ×3</td>
+      <td>Hardest broadband noise. 2023–2025: diffusion + masked models (TSPulse) win</td>
+    </tr>
+    <tr>
+      <td><strong>Electrode Motion (EM)</strong></td>
+      <td>Skin stretch, loose electrodes</td>
+      <td>NSTDB “em” record (only realistic source)</td>
+      <td>Scaled 0.1–2.0<br>Transients up to 5× ECG amplitude</td>
+      <td>Clinically most dangerous (mimics ischemia/PVC). Only latest foundation models (TSPulse 2024–2025) preserve >95 % morphology</td>
+    </tr>
+  </tbody>
+</table>
