@@ -18,7 +18,7 @@
 ## Algorithm & Mathematical Equations<br />
 | Algorithm | Mathematical Equation | Purpose/Context in Script |
 | :--- | :--- | :--- |
-| **Polyphase Resampling** | $ L' = L \times \frac{f'_s}{f_s}$<br>Reconstruction via sinc interpolation:<br>$x(t) = \sum_{n} x[n] \cdot \text{sinc}(t - nT) $ | Downsamples ECG signals from 360 Hz to 250 Hz while preserving annotation timings;<br>Used in MIT-BIH loading (Cell 2). |
+| **Polyphase Resampling** | $L' = L \times \frac{f'_s}{f_s}$<br>Reconstruction via sinc interpolation:<br>$x(t) = \sum_{n} x[n] \cdot \text{sinc}(t - nT)$ | Downsamples ECG signals from 360 Hz to 250 Hz while preserving annotation timings;<br>Used in MIT-BIH loading (Cell 2). |
 | **Min-Max Normalization** | $x' = \frac{x-\min(x)}{\max(x)-\min(x)+\epsilon}$<br>where $\epsilon = 10^{-8}$ | Scales filtered ECG segments to [0,1] range per window;<br>Prepares data for int8 quantization and stable training (Cell 3). |
 | **Binary Focal Loss** | $FL(p_t) = -\alpha_t(1 - p_t)^\gamma \log(p_t)$<br>where $p_t = y \cdot p + (1 - y)(1 - p)$<br>$\alpha_t = \alpha \text{ (if } y=1) \text{ or } 1 - \alpha$;<br>Defaults: $\alpha=0.25, \gamma=2.0$ | Handles class imbalance in arrhythmia detection (fewer abnormal beats);<br>Used as training loss for the CNN (Cell 4). |
 | **1D Convolution (in ReTinyCES CNN)** | $(x * w)[n] = \sum_{m} x[n - m] \cdot w[m] + b$<br>Followed by ReLU:<br>$f(z) = \max(0, z)$ | Extracts temporal features from ECG windows;<br>Layers: 16 filters (kernel=8), 32 filters (kernel=5) (Cell 4). |
